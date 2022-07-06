@@ -1,0 +1,14 @@
+name: perturbation
+channels:
+  - defaults
+dependencies:
+  - python=3.8
+  - torchaudio
+  - cudatoolkit=11.3
+  - pytorch
+  - torchvision
+  - pandas
+  - scikit-learn
+  - scikit-learn-intelex
+  - matplotlib
+prefix: /home/sonymd/anaconda3/envs/perturbation
