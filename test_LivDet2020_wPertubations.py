@@ -1,5 +1,6 @@
 import torch
 import torchvision.models as models
+from torchvision.models import DenseNet161_Weights
 import torch.nn as nn
 import torchvision.transforms as transforms
 from PIL import Image
@@ -17,7 +18,7 @@ import random
 import time
 import torchvision
 import matplotlib.pyplot as plt
-from torch.utils.mobile_optimizer import optimize_for_mobile
+from tqdm import tqdm
 
 
 valTransform = transforms.Compose([
@@ -230,7 +231,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-perturbation', default='GaussianNoise', type=str, help= 'GaussianNoise, WeightsZero, WeightsScaling, TopWeightsZero, BottomWeightsZero, WeightsZeroScaling, Quantize, FiltersZero')
     parser.add_argument('-perturbationSetup', default='Entire',type=str, help='Entire, Layers')
-    parser.add_argument('-scales', default='0.1, 0.2',type=str, help='0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9')
+    parser.add_argument('-scales', default='0.8, 0.2',type=str, help='0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9')
     parser.add_argument('-splitPath', default='Data-Splits/LivDet-Iris-2020/test_split-Seg.csv', type=str)
     parser.add_argument('-imageFolder', default='Iris_Image_Database/',type=str)
     parser.add_argument('-modelPath', default='Model/LivDet-Iris-2020/DesNet161_best.pth', type=str)
@@ -258,7 +259,8 @@ if __name__ == '__main__':
     # Defining scales
     scales = [float(scale) for scale in args.scales.split(',')]
 
-    # Defining perturbations
+    # Defining perturbations 
+    # Selectin layers based on the selected models
     if args.perturbationSetup == 'Entire':
         layers = [None]
     else:
@@ -276,7 +278,7 @@ if __name__ == '__main__':
 
             # Defining models
             if args.model == 'DenseNet161':
-                model = models.densenet161(pretrained=True)
+                model = models.densenet161(weights=DenseNet161_Weights.DEFAULT)
                 num_ftrs = model.classifier.in_features
                 model.classifier = nn.Linear(num_ftrs, 2)
             elif args.model == 'ResNet101':
@@ -323,11 +325,12 @@ if __name__ == '__main__':
                 modelList.append(modelTemp)
 
             testData = pd.read_csv(args.splitPath, header=None)
+            print("Number of models", len(modelList))
             testPredScores = np.zeros((len(modelList), len(testData.values)))
             testTrueLabels=[]
             testImgNames=[]
             segInfo= None
-            for count, v in enumerate(testData.values):
+            for count, v in enumerate(tqdm(testData.values)):
 
                     imageName = v[2]
                     imagePath = args.imageFolder + imageName
@@ -340,10 +343,11 @@ if __name__ == '__main__':
                         tranformImage = tranformImage.to(device)
 
                         # Computing output from the models
+
                         for index, model in enumerate(modelList):
                             output = model(tranformImage[:,0:3,:,:])
                             output = output.detach().cpu().numpy()[:, 1]
-                            testPredScores[index,count]= output[0]
+                            testPredScores[index, count]= output[0]
 
                         testImgNames.append(imageName)
                         if v[1] == 'Live':
