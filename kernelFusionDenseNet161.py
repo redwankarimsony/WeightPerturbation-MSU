@@ -126,8 +126,7 @@ if __name__ == '__main__':
                                  shuffle=False,
                                  num_workers=int(os.cpu_count() * 0.5))
 
-    saved_weights = glob.glob(os.path.join(args.resultPath, args.perturbation, "*.pth"))
-    print(saved_weights)
+    saved_weights = glob.glob(os.path.join(args.resultPath, args.perturbation, "*-.pth"))
 
     cross_match = {}
     for idxA, modelA in enumerate(saved_weights):
@@ -184,7 +183,6 @@ if __name__ == '__main__':
                 print(TDR, modelA.split("/")[-1], modelB.split("/")[-1])
 
                 cross_match[(modelA, modelB)] = [testImgNames, predictScore, testTrueLabels, (fprs, tprs, thresholds)]
-
                 with open(resultPath + args.perturbation + '-fusions.pickle', 'wb') as f:
                     pickle.dump(cross_match, f)
 
