@@ -18,7 +18,7 @@ valTransform = transforms.Compose([
 
 
 class LivDetIris2020(Dataset):
-    def __init__(self, imageFolder, splitPath) -> None:
+    def __init__(self, imageFolder, splitPath, split="train") -> None:
         """
         This is the LivDet-Iris-2020 and it is used to load the data
         for being used in pytorch models.
@@ -27,6 +27,14 @@ class LivDetIris2020(Dataset):
         self.imageFolder = imageFolder
         self.splitPath = splitPath
         self.testData = pd.read_csv(self.splitPath, header=None)
+        if self.testData.shape[1]==6:
+            self.testData.columns = ["split", "label", "path", "iCenterX", "iCenterY", "iRadius"]
+        elif self.testData.shape[1]==9:
+            self.testData.columns = ["split", "label", "path", "iCenterX", "iCenterY", "iRadius", "pCenterX", "pCenterY", "pRadius"]
+        
+        self.testData.drop(self.testData[self.testData["split"] != "test"].index, inplace = True)
+        print(self.testData.iloc[0, 2:3])
+                   
 
     def __len__(self):
         return len(self.testData)
@@ -35,6 +43,16 @@ class LivDetIris2020(Dataset):
         isImageSeg = False
         try:
             image = Image.open(imgFile)
+            
+            if image.mode == "RGBA":
+                image = image.convert(mode="RGB")
+            elif image.mode == "L":
+                image = image.convert(mode="RGB")
+            elif image.mode == "P":
+                image = image.convert(mode="RGB")
+
+            
+            
 
             # Segmentation and cropping of an image
             tranform_img=[]
@@ -46,11 +64,12 @@ class LivDetIris2020(Dataset):
                 image = image.crop([min_x, min_y, max_x, max_y])
 
                 tranform_img = valTransform(image)
-                tranform_img = tranform_img.repeat(3, 1, 1)
+                # if tranform_img.size(dim=0) ==1:
+                #     tranform_img = tranform_img.repeat(3, 1, 1)
                 isImageSeg=True
-        except:
+        except Exception as e:
             isImageSeg= False
-            print("Something wrong")
+            print("Something wrong", e, "\n", imgFile)
         return tranform_img, isImageSeg
 
     def __getitem__(self, index):
@@ -62,7 +81,7 @@ class LivDetIris2020(Dataset):
 
         # Segmentation of image
         tranformImage, isImageSeg = self.preprocess_image(imagePath, segInfo)
-        return tranformImage, imageName, 0 if v[1] =="Live" else 1
+        return tranformImage, imageName, 0 if v[1] == "Live" else 1
         
     
 
