@@ -1,5 +1,6 @@
 # Application specific ignore files. 
 Iris_Image_Database/LivDet-Iris-2020/*
+Iris_Image_Databse/LivDet-Iris-2017/*
 Model/LivDet-Iris-2020/*
 Results/*
 
