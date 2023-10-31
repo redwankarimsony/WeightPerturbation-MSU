@@ -1,0 +1,6 @@
+python selective-kernel-fusion-resnet101.py -splitPath 'Data-Splits/LivDet-Iris-2017/test_train_split01-Seg.csv'
+python selective-kernel-fusion-resnet101.py -splitPath 'Data-Splits/LivDet-Iris-2017/test_train_split02-Seg.csv'
+python selective-kernel-fusion-resnet101.py -splitPath 'Data-Splits/LivDet-Iris-2017/test_train_split03-Seg.csv'
+python selective-kernel-fusion-resnet101.py -splitPath 'Data-Splits/LivDet-Iris-2017/test_train_split04-Seg.csv'
+python selective-kernel-fusion-resnet101.py -splitPath 'Data-Splits/LivDet-Iris-2017/test_train_split05-Seg.csv'
+python selective-kernel-fusion-resnet101.py -splitPath 'Data-Splits/LivDet-Iris-2017/test_train_split06-Seg.csv'
