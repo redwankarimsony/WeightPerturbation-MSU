@@ -3,8 +3,16 @@ Iris_Image_Database/LivDet-Iris-2020/*
 Iris_Image_Database/LivDet-iris-2017/*
 Model/LivDet-Iris-2020/*
 Results/*
-
-
+vision-transformers-cifar10
+CIFAR10-Experiments/
+Data-Splits/
+DenseNet161.txt
+LivDet-Iris-2020.zip
+.idea
+*/*/*/*.pth
+*/*/*/*.pth
+*/*/*.pth
+*/*.pth
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
