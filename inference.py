@@ -11,6 +11,7 @@ from torchvision.models import DenseNet161_Weights
 from tqdm import tqdm
 
 from dataset import LivDetIris2020
+from search_results_exhaustive import *
 
 weight_key = "0.9114"
 device = torch.device("cuda:1")
@@ -27,7 +28,7 @@ model.eval()
 
 # Loading the dataset
 livDetIris20_ds = LivDetIris2020(imageFolder="Iris_Image_Database",
-                                 splitPath="Data-Splits/LivDet-Iris-2020/test_split-Seg.csv")
+                                 splitPath="Data-Splits/LivDet-Iris-2017/test_split-Seg.csv")
 print(len(livDetIris20_ds))
 livDetIris20_dl = DataLoader(livDetIris20_ds, batch_size=16, shuffle=False,
                              num_workers=int(os.cpu_count() * 0.5))

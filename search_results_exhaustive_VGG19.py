@@ -25,6 +25,25 @@ from dataset import LivDetIris2020
 from torch.utils.data import DataLoader
 torch.multiprocessing.set_sharing_strategy('file_system')
 
+def kernelFusionVGG19(model1, model2, layer,):
+    layers = ['0', '3', '7', '10', '14', '17', '20', '23', '27', '30', '33', '36', '40', '43', '46', '49']
+
+    for [name, param], [name2, param2] in zip(model1.named_parameters(), model2.named_parameters()):
+        if (layer is None and (any(number in name for number in layers) or 'classifier' in name)) or (
+                layer is not None and layer in name):
+            if 'weight' in name:
+                weights = param.detach().cpu().numpy()
+                weights2 = param2.detach().cpu().numpy()
+                param.data = torch.nn.Parameter(torch.tensor((weights + weights2) / 2., dtype=torch.float))
+            elif 'bias' in name:
+                # print(f"Layer idx: {idx}, Name: {name}")
+                # idx+=1
+                bias = param.detach().cpu().numpy()
+                bias2 = param2.detach().cpu().numpy()
+                param.data = torch.nn.Parameter(torch.tensor((bias + bias2) / 2., dtype=torch.float))
+    return model1
+
+
 
 def kernelFusionResNet101(model1, model2, layer,):
     idx=1
@@ -122,15 +141,15 @@ if __name__ == '__main__':
     parser.add_argument('-imageFolder', default='Iris_Image_Database/', type=str)
     parser.add_argument('-modelPath', default='Model/LivDet-Iris-2020/DesNet161_best.pth', type=str)
     parser.add_argument('-resultPath', default='Results/LivDet-Iris-2020/', type=str)
-    parser.add_argument('-model', default='ResNet101', type=str, help='DenseNet161, ResNet101, VGG19')
-    parser.add_argument('-bestTDR', default=0.8411, type=int)
+    parser.add_argument('-model', default='VGG19', type=str, help='DenseNet161, ResNet101, VGG19')
+    parser.add_argument('-bestTDR', default=0.7687, type=int)
     parser.add_argument('-nmodels', default=1, type=int)
     args = parser.parse_args()
 
     # CUDA Device assignment.
     if torch.cuda.is_available():
         if torch.cuda.device_count() > 1:
-            device = torch.device('cuda:0')
+            device = torch.device('cuda:1')
         else:
             device = torch.device("cuda")
     else:
@@ -184,14 +203,14 @@ if __name__ == '__main__':
 
 
 
-    combinations = loadSummary(os.path.join(args.resultPath, args.perturbation, "summary-resnet101.csv"))
+    combinations = loadSummary(os.path.join(args.resultPath, args.perturbation, "summary-VGG19.csv"))
     print(combinations.head())
-    predictionsPath = "/home/sonymd/Desktop/WeightPerturbation-MSU/Results/LivDet-Iris-2020/predictions-resnet101.pkl"
+    predictionsPath = "/home/sonymd/Desktop/WeightPerturbation-MSU/Results/LivDet-Iris-2020/predictions-VGG19.pkl"
     
-    pkl_file = open(os.path.join(args.resultPath, args.perturbation, "predictions-resnet101.pkl"), "rb")
+    pkl_file = open(os.path.join(args.resultPath, args.perturbation, "predictions-VGG19.pkl"), "rb")
     predictions = pickle.load(pkl_file)
     pkl_file.close()
-    pkl_file = open(os.path.join(args.resultPath, args.perturbation, "predictions-resnet101.pkl"), "wb")
+    pkl_file = open(os.path.join(args.resultPath, args.perturbation, "predictions-VGG19.pkl"), "wb")
 
     for rowIdx, row in combinations.iterrows():
         if combinations.iloc[rowIdx, 4] =="-" or combinations.iloc[rowIdx, 5] =="-":
@@ -201,8 +220,8 @@ if __name__ == '__main__':
             # Creating modelA and modelB
             modelA = os.path.join(args.resultPath, args.perturbation, row["modelA"])
             modelB = os.path.join(args.resultPath, args.perturbation, row["modelB"])
-            modelA = loadNewModel(desc=args.model, device=torch.device("cuda:0"), savedPath=modelA)
-            modelB = loadNewModel(desc=args.model, device=torch.device("cuda:0"), savedPath=modelB)
+            modelA = loadNewModel(desc=args.model, device=torch.device("cuda:1"), savedPath=modelA)
+            modelB = loadNewModel(desc=args.model, device=torch.device("cuda:1"), savedPath=modelB)
             modelA.eval()
             modelB.eval()
             
@@ -210,7 +229,12 @@ if __name__ == '__main__':
             testImgNames, testTrueLabels = getOriginalLabels(livDetIris20_dl)
 
             # Performing Kernel Fusion
-            model_Kfused = kernelFusionResNet101(modelA, modelB, layer=None)
+            if args.model == "DenseNet161":
+                model_Kfused = kernelFusionDenseNet161(modelA, modelB, layer=None)
+            elif args.model == "ResNet101":
+                model_Kfused = kernelFusionResNet101(modelA, modelB, layer=None)
+            elif args.model == "VGG19":
+                model_Kfused = kernelFusionVGG19(modelA, modelB, layer=None)
             model_Kfused.eval()
 
             # p = Process(target=getPrediction, args=([modelA, LivDetIris2020, torch.device("cuda:1")], [modelB, LivDetIris2020, torch.device("cuda:0")],))
@@ -220,20 +244,20 @@ if __name__ == '__main__':
                 modelA_preds = predictions[row["modelA"]]
                 print(row["modelA"], "Already Calculated!")
             else:
-                modelA_preds = getPrediction(model=modelA, dataLoader=livDetIris20_dl, device=torch.device("cuda:0"), message="modelA")
+                modelA_preds = getPrediction(model=modelA, dataLoader=livDetIris20_dl, device=torch.device("cuda:1"), message="modelA")
                 predictions[row["modelA"]] = modelA_preds
 
             if row["modelB"] in predictions.keys():
                 modelB_preds = predictions[row["modelB"]]
                 print(row["modelB"], "Already Calculated!")
             else:
-                modelB_preds = getPrediction(model=modelB, dataLoader=livDetIris20_dl, device=torch.device("cuda:0"), message="modelB")
+                modelB_preds = getPrediction(model=modelB, dataLoader=livDetIris20_dl, device=torch.device("cuda:1"), message="modelB")
                 predictions[row["modelB"]] = modelB_preds
             pickle.dump(predictions, pkl_file)
             modelB = None
             modelA = None
             torch.cuda.empty_cache()
-            model_Kfused_preds = getPrediction(model=model_Kfused, dataLoader=livDetIris20_dl, device=torch.device("cuda:0"), message="KFusion")
+            model_Kfused_preds = getPrediction(model=model_Kfused, dataLoader=livDetIris20_dl, device=torch.device("cuda:1"), message="KFusion")
             model_Kfused = None
             torch.cuda.empty_cache()
 
@@ -246,7 +270,7 @@ if __name__ == '__main__':
             combinations.iloc[rowIdx, 4] = regFusionScore
             combinations.iloc[rowIdx, 5] = kernelFusionScore
 
-            combinations.to_csv(os.path.join(args.resultPath, args.perturbation, "summary-resnet101.csv"), index=False)
+            combinations.to_csv(os.path.join(args.resultPath, args.perturbation, "summary-VGG19.csv"), index=False)
 
         else:
             print(f"Row number {rowIdx+1} already calculated")

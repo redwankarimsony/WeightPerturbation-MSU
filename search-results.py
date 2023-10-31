@@ -160,14 +160,15 @@ if __name__ == '__main__':
 
                 # Generating predictions
                 results = []
-                for batch_idx, datasets in enumerate(tqdm(livDetIris20_dl, desc=f"Generating Predictions:")):
-                    data, imgName, label = datasets
-                    testImgNames.extend(imgName)
-                    testTrueLabels.extend(label)
-                    data = data.to(device)
-                    predictions = model_fused(data).detach().cpu().numpy()[:, 1]
-                    results.extend(predictions)
-                testPredScores[0] = np.array(results)
+                with torch.no_grad():
+                    for batch_idx, datasets in enumerate(tqdm(livDetIris20_dl, desc=f"Generating Predictions:")):
+                        data, imgName, label = datasets
+                        testImgNames.extend(imgName)
+                        testTrueLabels.extend(label)
+                        data = data.to(device)
+                        predictions = model_fused(data).detach().cpu().numpy()[:, 1]
+                        results.extend(predictions)
+                    testPredScores[0] = np.array(results)
 
 
                 # Evaluation

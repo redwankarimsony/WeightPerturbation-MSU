@@ -232,7 +232,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-perturbation', default='GaussianNoise', type=str,
                         help='GaussianNoise, WeightsZero, WeightsScaling, TopWeightsZero, BottomWeightsZero, WeightsZeroScaling, Quantize, FiltersZero')
-    parser.add_argument('-perturbationSetup', default='Entire', type=str, help='Entire, Layers')
+    parser.add_argument('-perturbationSetup', default='Layers', type=str, help='Entire, Layers')
     parser.add_argument('-scales', default='0.1', type=str, help='0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9')
     parser.add_argument('-splitPath', default='Data-Splits/LivDet-Iris-2020/test_split-Seg.csv', type=str)
     parser.add_argument('-imageFolder', default='Iris_Image_Database/', type=str)
@@ -311,6 +311,7 @@ if __name__ == '__main__':
                 modelTemp = copy.deepcopy(model)
 
                 # Perturbing models
+                print(f"Layer {layer}")
                 if args.model == 'DenseNet161':
                     modelTemp = weightPertubationDenseNet161(modelTemp, layer, args.perturbation, scale)
                 elif args.model == 'ResNet101':
