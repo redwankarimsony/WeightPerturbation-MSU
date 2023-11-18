@@ -23,8 +23,10 @@ Instructions for setting up the project environment and installing necessary dep
 ```bash
 # Clone the repository
 git clone [repository URL](https://github.com/redwankarimsony/WeightPerturbation-MSU)
+
 # Navigate to the project directory
 cd WeightPerturbation-MSU
+
 # Install dependencies
 pip install -r requirements.txt
 ```
