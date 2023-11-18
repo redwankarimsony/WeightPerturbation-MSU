@@ -1,0 +1,4 @@
+Please download the base models and put them in this directory. 
+1. DesNet161_best.pth
+2. ResNet101_best.pth
+3. VGG19_best.pth
