@@ -1,0 +1,271 @@
+Results/
+├── LivDet-Iris-2017
+└── LivDet-Iris-2020
+    ├── BottomWeightsZero
+    │   ├── DenseNet161
+    │   ├── DenseNet161BottomWeightsZero-0.9045-.pth
+    │   ├── DenseNet161BottomWeightsZero.pickle
+    │   ├── DenseNet161ImprovedTDRs-BottomWeightsZero.csv
+    │   ├── DenseNet161TDR-BottomWeightsZero.csv
+    │   ├── ResNet101
+    │   ├── ResNet101BottomWeightsZero-0.8395-.pth
+    │   ├── ResNet101BottomWeightsZero.pickle
+    │   ├── ResNet101ImprovedTDRs-BottomWeightsZero.csv
+    │   ├── ResNet101TDR-BottomWeightsZero.csv
+    │   ├── VGG19
+    │   ├── VGG19BottomWeightsZero-0.7362-.pth
+    │   ├── VGG19BottomWeightsZero.pickle
+    │   ├── VGG19ImprovedTDRs-BottomWeightsZero.csv
+    │   └── VGG19TDR-BottomWeightsZero.csv
+    ├── classifier_6_weight
+    │   ├── BottomWeightsZero-0.7723-.pth
+    │   ├── BottomWeightsZero-0.7731-.pth
+    │   ├── BottomWeightsZero-0.7823-.pth
+    │   ├── BottomWeightsZero-0.7833-.pth
+    │   ├── BottomWeightsZero-0.7883-.pth
+    │   ├── BottomWeightsZero.pickle
+    │   ├── ImprovedTDRs-BottomWeightsZero.csv
+    │   └── TDR-BottomWeightsZero.csv
+    ├── conv1
+    │   ├── BottomWeightsZero-0.8461-.pth
+    │   ├── BottomWeightsZero-0.8640-.pth
+    │   ├── BottomWeightsZero.pickle
+    │   ├── ImprovedTDRs-BottomWeightsZero.csv
+    │   └── TDR-BottomWeightsZero.csv
+    ├── fc_weight
+    │   ├── BottomWeightsZero-0.8411-.pth
+    │   ├── BottomWeightsZero-0.8419-.pth
+    │   ├── BottomWeightsZero-0.8426-.pth
+    │   ├── BottomWeightsZero.pickle
+    │   ├── ImprovedTDRs-BottomWeightsZero.csv
+    │   └── TDR-BottomWeightsZero.csv
+    ├── features_0_weight
+    │   ├── BottomWeightsZero-0.7716-.pth
+    │   ├── BottomWeightsZero.pickle
+    │   ├── ImprovedTDRs-BottomWeightsZero.csv
+    │   └── TDR-BottomWeightsZero.csv
+    ├── features_10_weight
+    │   ├── BottomWeightsZero-0.7827-.pth
+    │   ├── BottomWeightsZero-0.8980-.pth
+    │   ├── BottomWeightsZero.pickle
+    │   ├── ImprovedTDRs-BottomWeightsZero.csv
+    │   └── TDR-BottomWeightsZero.csv
+    ├── features_20_weight
+    │   ├── BottomWeightsZero-0.7703-.pth
+    │   ├── BottomWeightsZero-0.7719-.pth
+    │   ├── BottomWeightsZero-0.7855-.pth
+    │   ├── BottomWeightsZero-0.8168-.pth
+    │   ├── BottomWeightsZero-0.8231-.pth
+    │   ├── BottomWeightsZero-0.8352-.pth
+    │   ├── BottomWeightsZero.pickle
+    │   ├── ImprovedTDRs-BottomWeightsZero.csv
+    │   └── TDR-BottomWeightsZero.csv
+    ├── features_30_weight
+    │   ├── BottomWeightsZero.pickle
+    │   └── TDR-BottomWeightsZero.csv
+    ├── features_40_weight
+    │   ├── BottomWeightsZero-0.7703-.pth
+    │   ├── BottomWeightsZero.pickle
+    │   ├── ImprovedTDRs-BottomWeightsZero.csv
+    │   └── TDR-BottomWeightsZero.csv
+    ├── features_50_weight
+    │   ├── BottomWeightsZero.pickle
+    │   └── TDR-BottomWeightsZero.csv
+    ├── features_denseblock1_denselayer6_conv2
+    │   ├── BottomWeightsZero-0.9614-.pth
+    │   ├── BottomWeightsZero-0.9634-.pth
+    │   ├── BottomWeightsZero-0.9637-.pth
+    │   ├── BottomWeightsZero-0.9656-.pth
+    │   ├── BottomWeightsZero-0.9686-.pth
+    │   ├── BottomWeightsZero.pickle
+    │   ├── GaussianNoise.pickle
+    │   ├── ImprovedTDRs-BottomWeightsZero.csv
+    │   ├── TDR-BottomWeightsZero.csv
+    │   └── TDR-GaussianNoise.csv
+    ├── FiltersZero
+    │   ├── DenseNet161
+    │   ├── DenseNet161FiltersZero.pickle
+    │   └── DenseNet161TDR-FiltersZero.csv
+    ├── GaussianNoise
+    │   ├── 9090-original.pkl
+    │   ├── 9114-original.pkl
+    │   ├── 9168-original.pkl
+    │   ├── 9194-original.pkl
+    │   ├── DenseNet161
+    │   ├── DenseNet161GaussianNoise-0.9030-.pth
+    │   ├── DenseNet161GaussianNoise-0.9038-.pth
+    │   ├── DenseNet161GaussianNoise-0.9059-.pth
+    │   ├── DenseNet161GaussianNoise-0.9066-.pth
+    │   ├── DenseNet161GaussianNoise-0.9072-.pth
+    │   ├── DenseNet161GaussianNoise-0.9080-.pth
+    │   ├── DenseNet161GaussianNoise-0.9087-.pth
+    │   ├── DenseNet161GaussianNoise-0.9090-.pth
+    │   ├── DenseNet161GaussianNoise-0.9114-.pth
+    │   ├── DenseNet161GaussianNoise-0.9116-.pth
+    │   ├── DenseNet161GaussianNoise-0.9124-.pth
+    │   ├── DenseNet161GaussianNoise-0.9131-.pth
+    │   ├── DenseNet161GaussianNoise-0.9137-.pth
+    │   ├── DenseNet161GaussianNoise-0.9141-.pth
+    │   ├── DenseNet161GaussianNoise-0.9144-.pth
+    │   ├── DenseNet161GaussianNoise-0.9145-.pth
+    │   ├── DenseNet161GaussianNoise-0.9168-.pth
+    │   ├── DenseNet161GaussianNoise-0.9194-.pth
+    │   ├── DenseNet161GaussianNoise-0.9203-.pth
+    │   ├── DenseNet161GaussianNoise-0.9204-.pth
+    │   ├── DenseNet161GaussianNoise-0.9209-.pth
+    │   ├── DenseNet161GaussianNoise-0.9242-.pth
+    │   ├── DenseNet161GaussianNoise-0.9248-.pth
+    │   ├── DenseNet161GaussianNoise-0.9266-.pth
+    │   ├── DenseNet161GaussianNoise-0.9276-.pth
+    │   ├── DenseNet161GaussianNoise-0.9316-.pth
+    │   ├── DenseNet161GaussianNoise-0.9321-.pth
+    │   ├── DenseNet161GaussianNoise-0.9340-.pth
+    │   ├── DenseNet161GaussianNoise-0.9416-.pth
+    │   ├── DenseNet161GaussianNoise-0.9418-.pth
+    │   ├── DenseNet161GaussianNoise-0.9454-.pth
+    │   ├── DenseNet161GaussianNoise-0.9476-.pth
+    │   ├── DenseNet161GaussianNoise-fusions.pickle
+    │   ├── DenseNet161GaussianNoise-old.pickle
+    │   ├── DenseNet161GaussianNoise.pickle
+    │   ├── DenseNet161ImprovedTDRs-GaussianNoise.csv
+    │   ├── DenseNet161TDR-GaussianNoise.csv
+    │   ├── Improved Models
+    │   │   ├── DenseNet161GaussianNoise-0.9030-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9038-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9059-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9066-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9072-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9080-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9087-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9090-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9114-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9116-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9124-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9131-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9137-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9141-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9144-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9145-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9168-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9194-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9203-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9204-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9209-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9242-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9248-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9266-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9276-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9316-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9321-.pth
+    │   │   ├── DenseNet161GaussianNoise-0.9340-.pth
+    │   │   └── DenseNet161GaussianNoise-0.9416-.pth
+    │   ├── model_frequency.svg
+    │   ├── perturbation-log.txt
+    │   ├── predictions-resnet101.pkl
+    │   ├── predictions-VGG19.pkl
+    │   ├── res
+    │   │   ├── summary-dnetPAD.csv
+    │   │   ├── summary-resnet101.csv
+    │   │   └── summary-VGG19.csv
+    │   ├── ResNet101
+    │   ├── ResNet101GaussianNoise-0.8561-.pth
+    │   ├── ResNet101GaussianNoise-0.8566-.pth
+    │   ├── ResNet101GaussianNoise-0.8579-.pth
+    │   ├── ResNet101GaussianNoise-0.8585-.pth
+    │   ├── ResNet101GaussianNoise-0.8590-.pth
+    │   ├── ResNet101GaussianNoise-0.8599-.pth
+    │   ├── ResNet101GaussianNoise-0.8606-.pth
+    │   ├── ResNet101GaussianNoise-0.8609-.pth
+    │   ├── ResNet101GaussianNoise-0.8638-.pth
+    │   ├── ResNet101GaussianNoise-0.8645-.pth
+    │   ├── ResNet101GaussianNoise-0.8654-.pth
+    │   ├── ResNet101GaussianNoise-0.8673-.pth
+    │   ├── ResNet101GaussianNoise-0.8700-.pth
+    │   ├── ResNet101GaussianNoise-0.8709-.pth
+    │   ├── ResNet101GaussianNoise-0.8731-.pth
+    │   ├── ResNet101GaussianNoise-0.8742-.pth
+    │   ├── ResNet101GaussianNoise-0.8749-.pth
+    │   ├── ResNet101GaussianNoise-0.8755-.pth
+    │   ├── ResNet101GaussianNoise-0.8779-.pth
+    │   ├── ResNet101GaussianNoise-0.8840-.pth
+    │   ├── ResNet101GaussianNoise-0.8849-.pth
+    │   ├── ResNet101GaussianNoise-0.8859-.pth
+    │   ├── ResNet101GaussianNoise-0.8864-.pth
+    │   ├── ResNet101GaussianNoise-0.8893-.pth
+    │   ├── ResNet101GaussianNoise-0.9006-.pth
+    │   ├── ResNet101GaussianNoise-0.9028-.pth
+    │   ├── ResNet101GaussianNoise-0.9128-.pth
+    │   ├── ResNet101GaussianNoise.pickle
+    │   ├── ResNet101ImprovedTDRs-GaussianNoise.csv
+    │   ├── ResNet101TDR-GaussianNoise.csv
+    │   ├── search-log.txt
+    │   ├── summary.csv
+    │   ├── summary-dnetPAD.csv
+    │   ├── summary-resnet101.csv
+    │   ├── summary-VGG19.csv
+    │   ├── VGG19
+    │   ├── VGG19GaussianNoise-0.7807-.pth
+    │   ├── VGG19GaussianNoise-0.7844-.pth
+    │   ├── VGG19GaussianNoise-0.7862-.pth
+    │   ├── VGG19GaussianNoise-0.7864-.pth
+    │   ├── VGG19GaussianNoise-0.7899-.pth
+    │   ├── VGG19GaussianNoise-0.7903-.pth
+    │   ├── VGG19GaussianNoise-0.7957-.pth
+    │   ├── VGG19GaussianNoise-0.7988-.pth
+    │   ├── VGG19GaussianNoise-0.8002-.pth
+    │   ├── VGG19GaussianNoise-0.8020-.pth
+    │   ├── VGG19GaussianNoise-0.8071-.pth
+    │   ├── VGG19GaussianNoise-0.8131-.pth
+    │   ├── VGG19GaussianNoise-0.8162-.pth
+    │   ├── VGG19GaussianNoise-0.8217-.pth
+    │   ├── VGG19GaussianNoise-0.8233-.pth
+    │   ├── VGG19GaussianNoise-0.8372-.pth
+    │   ├── VGG19GaussianNoise-0.8390-.pth
+    │   ├── VGG19GaussianNoise-0.8402-.pth
+    │   ├── VGG19GaussianNoise-0.8856-.pth
+    │   ├── VGG19GaussianNoise-0.9031-.pth
+    │   ├── VGG19GaussianNoise.pickle
+    │   ├── VGG19ImprovedTDRs-GaussianNoise.csv
+    │   └── VGG19TDR-GaussianNoise.csv
+    ├── layer1_2_conv3_weight
+    │   ├── BottomWeightsZero-0.8423-.pth
+    │   ├── BottomWeightsZero-0.8427-.pth
+    │   ├── BottomWeightsZero.pickle
+    │   ├── ImprovedTDRs-BottomWeightsZero.csv
+    │   └── TDR-BottomWeightsZero.csv
+    ├── layer2_3_conv3_weight
+    │   ├── BottomWeightsZero-0.8431-.pth
+    │   ├── BottomWeightsZero-0.8433-.pth
+    │   ├── BottomWeightsZero-0.8444-.pth
+    │   ├── BottomWeightsZero.pickle
+    │   ├── ImprovedTDRs-BottomWeightsZero.csv
+    │   └── TDR-BottomWeightsZero.csv
+    ├── layer3_22_conv3_weight
+    │   ├── BottomWeightsZero-0.8414-.pth
+    │   ├── BottomWeightsZero-0.8419-.pth
+    │   ├── BottomWeightsZero.pickle
+    │   ├── ImprovedTDRs-BottomWeightsZero.csv
+    │   └── TDR-BottomWeightsZero.csv
+    ├── layer4_2_conv3_weight
+    │   ├── BottomWeightsZero.pickle
+    │   └── TDR-BottomWeightsZero.csv
+    ├── WeightsScaling
+    │   ├── DenseNet161
+    │   ├── DenseNet161TDR-WeightsScaling.csv
+    │   ├── DenseNet161WeightsScaling.pickle
+    │   ├── ResNet101
+    │   ├── ResNet101TDR-WeightsScaling.csv
+    │   ├── ResNet101WeightsScaling.pickle
+    │   ├── VGG19
+    │   ├── VGG19TDR-WeightsScaling.csv
+    │   └── VGG19WeightsScaling.pickle
+    └── WeightsZero
+        ├── DenseNet161
+        ├── DenseNet161TDR-WeightsZero.csv
+        ├── DenseNet161WeightsZero.pickle
+        ├── ResNet101
+        ├── ResNet101TDR-WeightsZero.csv
+        ├── ResNet101WeightsZero.pickle
+        ├── VGG19
+        ├── VGG19TDR-WeightsZero.csv
+        └── VGG19WeightsZero.pickle
