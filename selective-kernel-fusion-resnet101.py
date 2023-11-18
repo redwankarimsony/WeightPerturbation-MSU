@@ -26,7 +26,7 @@ from tqdm import tqdm
 from dataset import LivDetIris2020
 from torch.utils.data import DataLoader
 torch.multiprocessing.set_sharing_strategy('file_system')
-from search_results_exhaustive import *
+from search_results_exhaustive_DenseNet import *
 
 
 def kernelFusionVGG19(model1, model2, layer,):

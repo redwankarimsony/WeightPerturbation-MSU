@@ -11,7 +11,7 @@ from torchvision.models import DenseNet161_Weights
 from tqdm import tqdm
 
 from dataset import LivDetIris2020
-from search_results_exhaustive import *
+from search_results_exhaustive_DenseNet import *
 
 weight_key = "0.9114"
 device = torch.device("cuda:1")
