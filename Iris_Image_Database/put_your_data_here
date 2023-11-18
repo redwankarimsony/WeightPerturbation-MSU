@@ -1,0 +1,9 @@
+Put the dataset folder here in the directory. 
+Iris_Image_Database/
+├── LivDet-iris-2017
+│   ├── Clarkson
+│   ├── IIITD_WVU
+│   ├── NotreDame
+│   └── Warsaw
+├── LivDet-Iris-2020
+    └── Test
