@@ -9,16 +9,13 @@ import os
 import torch
 
 
-
-
-
 def make_search_index(result_dir, perturbation, model):
     try:
         df_models_detail = pd.read_csv(os.path.join(result_dir, perturbation, model, 'models_detail.csv'))
     except FileNotFoundError:
         print(f"models_detail.csv not found in {os.path.join(result_dir, perturbation, model)}")
         return
-    
+
     files = df_models_detail.fileName.values
 
     # Generating all combinations of two files
@@ -26,21 +23,19 @@ def make_search_index(result_dir, perturbation, model):
 
     df_search = pd.DataFrame(columns=['modelA', 'modelB', 'modelA-Score', 'modelB-Score', 'RegularFusion',
                                       'KernelFusion'])
-    
+
     for (modelA, modelB) in file_combinations:
         # Updating the search index
         new_row = pd.DataFrame(columns=['modelA', 'modelB', 'modelA-Score', 'modelB-Score', 'RegularFusion',
-                                        'KernelFusion'], 
-                                        data=[[modelA, modelB, modelA.split("-")[-2], modelB.split("-")[-2], 'None', 'None']])
-        
-        df_search = pd.concat([df_search, new_row], ignore_index=True)
+                                        'KernelFusion'],
+                               data=[[modelA, modelB, modelA.split("-")[-2], modelB.split("-")[-2], 'None', 'None']])
 
+        df_search = pd.concat([df_search, new_row], ignore_index=True)
 
     # Saving the search index
     df_search.to_csv(os.path.join(result_dir, perturbation, model, f"fusion-results.csv"), index=False)
     print(f"Search index saved at: {os.path.join(result_dir, perturbation, model, f'fusion-results.csv')}")
     print(df_search.head())
-
 
 
 def update_models_details(filePath, keep_best, info):
