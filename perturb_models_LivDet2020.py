@@ -18,8 +18,6 @@ from perturbation import (weightPertubationDenseNet161,
                           weightPertubationVGG19)
 from utils import get_cuda_device, make_search_index, update_models_details
 
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-perturbation', default='GaussianNoise', type=str,
@@ -37,7 +35,6 @@ if __name__ == '__main__':
     parser.add_argument("-device", default="cuda:0", type=str)
     args = parser.parse_args()
 
-
     # CUDA Device assignment.
     args.device = get_cuda_device()
 
@@ -46,8 +43,6 @@ if __name__ == '__main__':
     args.modelPath = base_model_paths[args.model]
     print(f"\n\nExperiment: \nModel: {args.model}\nModelPath: {args.modelPath}")
     print(f"Dataset: {args.splitPath} \nBestTDR: {args.bestTDR} \nDevice: {args.device}\n\n")
-
-
 
     # Creating result directory
     resultPath = os.path.join(args.resultPath, args.perturbation, args.model)
@@ -60,7 +55,7 @@ if __name__ == '__main__':
     layers = get_layers(model=args.model, perturbationSetup=args.perturbationSetup)
 
     for i in range(0, args.nmodels):
-        print(f"\n\n\nModel {i+1} of {args.nmodels}")
+        print(f"\n\n\nModel {i + 1} of {args.nmodels}")
         for layer in layers:
             # Loading the model
             model = loadNewModel(args.model, savedPath=args.modelPath, device=args.device)
@@ -82,13 +77,13 @@ if __name__ == '__main__':
                 elif args.model == 'VGG19':
                     modelTemp = weightPertubationVGG19(modelTemp, layer, args.perturbation, scale).to(args.device)
 
-
                 # Calculating overall relative difference in the parameters
                 diffParameters = torch.cat([(param_1 - param_2).view(-1) for param_1, param_2 in
                                             zip(modelTemp.parameters(), model.parameters())], dim=0)
                 orgParameters = torch.cat([param_2.view(-1) for param_2 in model.parameters()], dim=0)
                 relChange.append(
-                    linalg.norm(diffParameters.detach().cpu().numpy()) / linalg.norm(orgParameters.detach().cpu().numpy()))
+                    linalg.norm(diffParameters.detach().cpu().numpy()) / linalg.norm(
+                        orgParameters.detach().cpu().numpy()))
                 modelTemp = modelTemp.to(args.device)
                 modelTemp.eval()
                 modelList.append(modelTemp)
@@ -143,23 +138,21 @@ if __name__ == '__main__':
                     # Save the best model
                     best_model = modelList[index].to("cpu")
                     torch.save(best_model.state_dict(),
-                                os.path.join(model_save_dir, 
-                                             f"{args.model}{args.perturbation}-{TDR:0.4f}-.pth"))
-                    
-                    # Update models_detail.csv and keep the best 30 models
-                    update_models_details(filePath=os.path.join(model_save_dir, f"models_detail.csv"), 
-                                          keep_best=20, 
-                                          info={"fileName" : f"{args.model}{args.perturbation}-{TDR:0.4f}-.pth", 
-                                              "layer": layer, 
-                                                "scale": scales[index], 
-                                                "TDR": round(TDR, 4), 
-                                                "relChange": round(relChange[index], 6)})
-                    
+                               os.path.join(model_save_dir,
+                                            f"{args.model}{args.perturbation}-{TDR:0.4f}-.pth"))
 
-                    print(f"Improvement Found: ", f"{args.model}{args.perturbation}-{TDR:0.4f}-.pth above", args.bestTDR )
+                    # Update models_detail.csv and keep the best 30 models
+                    update_models_details(filePath=os.path.join(model_save_dir, f"models_detail.csv"),
+                                          keep_best=20,
+                                          info={"fileName": f"{args.model}{args.perturbation}-{TDR:0.4f}-.pth",
+                                                "layer": layer,
+                                                "scale": scales[index],
+                                                "TDR": round(TDR, 4),
+                                                "relChange": round(relChange[index], 6)})
+
+                    print(f"Improvement Found: ", f"{args.model}{args.perturbation}-{TDR:0.4f}-.pth above",
+                          args.bestTDR)
 
                 else:
-                    print(f"No Improvement Found: ", f"{args.model}{args.perturbation}-{TDR:0.4f}-.pth above", args.bestTDR )
-                    
-
-
+                    print(f"No Improvement Found: ", f"{args.model}{args.perturbation}-{TDR:0.4f}-.pth above",
+                          args.bestTDR)
