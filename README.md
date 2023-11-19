@@ -59,12 +59,12 @@ python kernel_fusion.py -model ResNet101
 python kernel_fusion.py -model VGG16
 ```
 
-## Results
+<!-- ## Results
 ![](Results/from-paper/1.png)
 ![](Results/from-paper/2.png)
 ![!](Results/from-paper/3.png)
 ![!](Results/from-paper/4.png)
-![!](Results/from-paper/5.png)
+![!](Results/from-paper/5.png) -->
 
 
 ## Acknowledgments
