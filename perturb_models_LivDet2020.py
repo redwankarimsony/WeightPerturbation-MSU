@@ -16,7 +16,8 @@ from fusions import loadNewModel
 from perturbation import (weightPertubationDenseNet161,
                           weightPertubationResNet101,
                           weightPertubationVGG19)
-from utils import get_cuda_device
+from utils import get_cuda_device, make_search_index, update_models_details
+
 
 
 if __name__ == '__main__':
@@ -31,7 +32,7 @@ if __name__ == '__main__':
     parser.add_argument('-modelPath', default='Model/LivDet-Iris-2020/DenseNet161_best.pth', type=str)
     parser.add_argument('-resultPath', default='Results/LivDet-Iris-2020/', type=str)
     parser.add_argument('-model', default='DenseNet161', type=str, help='DenseNet161, ResNet101, VGG19')
-    parser.add_argument('-bestTDR', default={'DenseNet161': 0.9022, 'ResNet101': 0.8411, 'VGG19': 0.7687})
+    parser.add_argument('-bestTDR', default=0.9022)
     parser.add_argument('-nmodels', default=1, type=int)
     parser.add_argument("-device", default="cuda:0", type=str)
     args = parser.parse_args()
@@ -39,8 +40,8 @@ if __name__ == '__main__':
     # Selecting the best TDR for the model and setting the base model path
     args.bestTDR = bestTDRs[args.model]
     args.modelPath = base_model_paths[args.model]
-    print(f"Experiment: \nModel: {args.model}\nModelPath: {args.modelPath}")
-    print(f"\nDataset: {args.splitPath} BestTDR: {args.bestTDR}\nDevice: {args.device}")
+    print(f"\n\nExperiment: \nModel: {args.model}\nModelPath: {args.modelPath}")
+    print(f"Dataset: {args.splitPath} \nBestTDR: {args.bestTDR} \nDevice: {args.device}\n\n")
 
     # CUDA Device assignment.
     device = get_cuda_device()
@@ -56,7 +57,7 @@ if __name__ == '__main__':
     layers = get_layers(model=args.model, perturbationSetup=args.perturbationSetup)
 
     for i in range(0, args.nmodels):
-
+        print(f"\n\n\nModel {i+1} of {args.nmodels}")
         for layer in layers:
             # Loading the model
             model = loadNewModel(args.model, savedPath=args.modelPath, device=device)
@@ -72,28 +73,25 @@ if __name__ == '__main__':
                 # Perturbing models
                 print(f"Layer {layer}")
                 if args.model == 'DenseNet161':
-                    modelTemp = weightPertubationDenseNet161(modelTemp, layer, args.perturbation, scale)
+                    modelTemp = weightPertubationDenseNet161(modelTemp, layer, args.perturbation, scale).to(device)
                 elif args.model == 'ResNet101':
-                    modelTemp = weightPertubationResNet101(modelTemp, layer, args.perturbation, scale)
+                    modelTemp = weightPertubationResNet101(modelTemp, layer, args.perturbation, scale).to(device)
                 elif args.model == 'VGG19':
-                    modelTemp = weightPertubationVGG19(modelTemp, layer, args.perturbation, scale)
+                    modelTemp = weightPertubationVGG19(modelTemp, layer, args.perturbation, scale).to(device)
 
-                # Saving of Perturbed Model
-                # states = {'state_dict': modelTemp.state_dict()}
-                # torch.save(states, resultPath+ 'D-NetPAD_0.1.pth')
 
                 # Calculating overall relative difference in the parameters
                 diffParameters = torch.cat([(param_1 - param_2).view(-1) for param_1, param_2 in
                                             zip(modelTemp.parameters(), model.parameters())], dim=0)
                 orgParameters = torch.cat([param_2.view(-1) for param_2 in model.parameters()], dim=0)
                 relChange.append(
-                    linalg.norm(diffParameters.detach().numpy()) / linalg.norm(orgParameters.detach().numpy()))
+                    linalg.norm(diffParameters.detach().cpu().numpy()) / linalg.norm(orgParameters.detach().cpu().numpy()))
                 modelTemp = modelTemp.to(device)
                 modelTemp.eval()
                 modelList.append(modelTemp)
 
             testData = pd.read_csv(args.splitPath, header=None)
-            print("Number of models", len(modelList))
+            print("Number of models", len(modelList), "for scale(s):", scales)
             testPredScores = np.zeros((len(modelList), len(testData.values)))
             testTrueLabels, testImgNames, segInfo = [], [], None
 
@@ -115,8 +113,8 @@ if __name__ == '__main__':
                     results.extend(predictions)
                 testPredScores[model_idx] = np.array(results)
 
-            print(testPredScores.shape, "final predictions")
-            print(testPredScores[0].min(), testPredScores[0].max(), "final predictions")
+            # print(testPredScores.shape, "final predictions")
+            # print(testPredScores[0].min(), testPredScores[0].max(), "final predictions")
 
             with open(resultPath + args.perturbation + '.pickle', 'wb') as f:
                 pickle.dump([testImgNames, testPredScores, testTrueLabels], f)
@@ -134,13 +132,40 @@ if __name__ == '__main__':
                 # Calculating TDR at 0.2% FDR
                 TDR = np.interp(0.002, fprs, tprs)
 
-                # Storing results
-                if TDR > args.bestTDR[args.model]:
-                    with open(resultPath + 'ImprovedTDRs-' + args.perturbation + '.csv', mode='a+') as fout:
-                        fout.write("%s,%f,%f,%f\n" % (layer, scales[index], TDR, relChange[index]))
-                        best_model = modelList[index].to("cpu")
-                        torch.save(best_model.state_dict(), resultPath + args.perturbation + f"-{TDR:0.4f}-.pth")
+                model_save_dir = os.path.join(args.resultPath, args.perturbation, args.model)
+                os.makedirs(model_save_dir, exist_ok=True)
 
-                with open(resultPath + 'TDR-' + args.perturbation + '.csv', mode='a+') as fout:
-                    fout.write("%f,%f,%f\n" % (scales[index], TDR, relChange[index]))
-                print("TDR @ 0.002 FDR with %s : %f @ scale %f \n" % (args.perturbation, TDR, scales[index]))
+                # Storing results
+                if TDR > args.bestTDR:
+                    # Save the best model
+                    best_model = modelList[index].to("cpu")
+                    torch.save(best_model.state_dict(),
+                                os.path.join(model_save_dir, 
+                                             f"{args.model}{args.perturbation}-{TDR:0.4f}-.pth"))
+                    
+                    # Update models_detail.csv and keep the best 30 models
+                    update_models_details(filePath=os.path.join(model_save_dir, f"models_detail.csv"), 
+                                          keep_best=20, 
+                                          info={"fileName" : f"{args.model}{args.perturbation}-{TDR:0.4f}-.pth", 
+                                              "layer": layer, 
+                                                "scale": scales[index], 
+                                                "TDR": round(TDR, 4), 
+                                                "relChange": round(relChange[index], 6)})
+                    
+
+                    print(f"Improvement Found: ", f"{args.model}{args.perturbation}-{TDR:0.4f}-.pth above", args.bestTDR )
+
+                else:
+                    print(f"No Improvement Found: ", f"{args.model}{args.perturbation}-{TDR:0.4f}-.pth above", args.bestTDR )
+                    
+                    
+                    # with open(os.path.join(model_save_dir, f"models_detail.csv"), mode='a+') as fout:
+                    #     fout.write("%s,%f,%f,%f\n" % (layer, scales[index], TDR, relChange[index]))
+                        
+                        
+                        
+                # with open(resultPath + 'TDR-' + args.perturbation + '.csv', mode='a+') as fout:
+                #     fout.write("%f,%f,%f\n" % (scales[index], TDR, relChange[index]))
+                # print("TDR @ 0.002 FDR with %s : %f @ scale %f \n" % (args.perturbation, TDR, scales[index]))
+
+
