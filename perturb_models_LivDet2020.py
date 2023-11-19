@@ -37,14 +37,17 @@ if __name__ == '__main__':
     parser.add_argument("-device", default="cuda:0", type=str)
     args = parser.parse_args()
 
+
+    # CUDA Device assignment.
+    args.device = get_cuda_device()
+
     # Selecting the best TDR for the model and setting the base model path
     args.bestTDR = bestTDRs[args.model]
     args.modelPath = base_model_paths[args.model]
     print(f"\n\nExperiment: \nModel: {args.model}\nModelPath: {args.modelPath}")
     print(f"Dataset: {args.splitPath} \nBestTDR: {args.bestTDR} \nDevice: {args.device}\n\n")
 
-    # CUDA Device assignment.
-    device = get_cuda_device()
+
 
     # Creating result directory
     resultPath = os.path.join(args.resultPath, args.perturbation, args.model)
@@ -60,7 +63,7 @@ if __name__ == '__main__':
         print(f"\n\n\nModel {i+1} of {args.nmodels}")
         for layer in layers:
             # Loading the model
-            model = loadNewModel(args.model, savedPath=args.modelPath, device=device)
+            model = loadNewModel(args.model, savedPath=args.modelPath, device=args.device)
 
             if layer is not None:
                 resultPath = args.resultPath + layer.replace('.', '_') + '/'
@@ -73,11 +76,11 @@ if __name__ == '__main__':
                 # Perturbing models
                 print(f"Layer {layer}")
                 if args.model == 'DenseNet161':
-                    modelTemp = weightPertubationDenseNet161(modelTemp, layer, args.perturbation, scale).to(device)
+                    modelTemp = weightPertubationDenseNet161(modelTemp, layer, args.perturbation, scale).to(args.device)
                 elif args.model == 'ResNet101':
-                    modelTemp = weightPertubationResNet101(modelTemp, layer, args.perturbation, scale).to(device)
+                    modelTemp = weightPertubationResNet101(modelTemp, layer, args.perturbation, scale).to(args.device)
                 elif args.model == 'VGG19':
-                    modelTemp = weightPertubationVGG19(modelTemp, layer, args.perturbation, scale).to(device)
+                    modelTemp = weightPertubationVGG19(modelTemp, layer, args.perturbation, scale).to(args.device)
 
 
                 # Calculating overall relative difference in the parameters
@@ -86,7 +89,7 @@ if __name__ == '__main__':
                 orgParameters = torch.cat([param_2.view(-1) for param_2 in model.parameters()], dim=0)
                 relChange.append(
                     linalg.norm(diffParameters.detach().cpu().numpy()) / linalg.norm(orgParameters.detach().cpu().numpy()))
-                modelTemp = modelTemp.to(device)
+                modelTemp = modelTemp.to(args.device)
                 modelTemp.eval()
                 modelList.append(modelTemp)
 
@@ -108,7 +111,7 @@ if __name__ == '__main__':
                     if model_idx == 0:
                         testImgNames.extend(imgName)
                         testTrueLabels.extend(list(label.numpy()))
-                    data = data.to(device)
+                    data = data.to(args.device)
                     predictions = model(data).detach().cpu().numpy()[:, 1]
                     results.extend(predictions)
                 testPredScores[model_idx] = np.array(results)
@@ -158,14 +161,5 @@ if __name__ == '__main__':
                 else:
                     print(f"No Improvement Found: ", f"{args.model}{args.perturbation}-{TDR:0.4f}-.pth above", args.bestTDR )
                     
-                    
-                    # with open(os.path.join(model_save_dir, f"models_detail.csv"), mode='a+') as fout:
-                    #     fout.write("%s,%f,%f,%f\n" % (layer, scales[index], TDR, relChange[index]))
-                        
-                        
-                        
-                # with open(resultPath + 'TDR-' + args.perturbation + '.csv', mode='a+') as fout:
-                #     fout.write("%f,%f,%f\n" % (scales[index], TDR, relChange[index]))
-                # print("TDR @ 0.002 FDR with %s : %f @ scale %f \n" % (args.perturbation, TDR, scales[index]))
 
 

@@ -66,7 +66,7 @@ def weightPertubationResNet101(model, layer, perturbation, proportion):
         # print(name)
         if (layer is None and ('conv' in name or 'fc' in name)) or (layer is not None and layer in name):
             if 'weight' in name:
-                weights = param.detach().numpy()
+                weights = param.detach().cpu().numpy()
                 if perturbation == 'GaussianNoise':
                     weights = weights + np.random.normal(loc=0.0, scale=proportion * np.std(weights),
                                                          size=weights.shape)
@@ -93,7 +93,7 @@ def weightPertubationResNet101(model, layer, perturbation, proportion):
                     weights = weights * 5
                 param.data = torch.nn.Parameter(torch.tensor(weights, dtype=torch.float))
             elif 'bias' in name:
-                bias = param.detach().numpy()
+                bias = param.detach().cpu().numpy()
                 if perturbation == 'GaussianNoise':
                     bias = bias + np.random.normal(loc=0.0, scale=proportion * np.std(bias), size=bias.shape)
                 elif perturbation == 'WeightsZero':
@@ -126,7 +126,7 @@ def weightPertubationVGG19(model, layer, perturbation, proportion):
         if (layer is None and (any(number in name for number in layers) or 'classifier' in name)) or (
                 layer is not None and layer in name):
             if 'weight' in name:
-                weights = param.detach().numpy()
+                weights = param.detach().cpu().numpy()
                 if perturbation == 'GaussianNoise':
                     weights = weights + np.random.normal(loc=0.0, scale=proportion * np.std(weights),
                                                          size=weights.shape)
@@ -153,7 +153,7 @@ def weightPertubationVGG19(model, layer, perturbation, proportion):
                     weights = weights * 5
                 param.data = torch.nn.Parameter(torch.tensor(weights, dtype=torch.float))
             elif 'bias' in name:
-                bias = param.detach().numpy()
+                bias = param.detach().cpu().numpy()
                 if perturbation == 'GaussianNoise':
                     bias = bias + np.random.normal(loc=0.0, scale=proportion * np.std(bias), size=bias.shape)
                 elif perturbation == 'WeightsZero':

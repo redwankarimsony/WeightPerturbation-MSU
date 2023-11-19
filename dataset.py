@@ -35,7 +35,7 @@ class LivDetIris2020(Dataset):
                                      "pCenterY", "pRadius"]
 
         self.testData.drop(self.testData[self.testData["split"] != "test"].index, inplace=True)
-        print(self.testData.iloc[0, 2:3])
+        # print(self.testData.iloc[0, 2:3])
 
     def __len__(self):
         return len(self.testData)

@@ -13,7 +13,8 @@ def get_cuda_device():
     # CUDA Device assignment.
     if torch.cuda.is_available():
         if torch.cuda.device_count() > 1:
-            device = torch.device('cuda:1')
+            best_gpu = get_gpu_with_least_memory_over_period()
+            device = torch.device(f'cuda:{best_gpu}')
         else:
             device = torch.device("cuda")
     else:
@@ -99,7 +100,7 @@ def get_gpu_usage():
         print(f"Error obtaining GPU information: {e}")
         return []
 
-def get_gpu_with_least_memory_over_period(period=20, interval=1):
+def get_gpu_with_least_memory_over_period(period=5, interval=1):
     """Returns the GPU index with the least average memory usage over a period."""
     samples = int(period / interval)
     accumulated_usages = {}
@@ -114,5 +115,6 @@ def get_gpu_with_least_memory_over_period(period=20, interval=1):
     avg_usages = {index: sum(usages) / len(usages) for index, usages in accumulated_usages.items()}
     if not avg_usages:
         return None
-    
-    return min(avg_usages, key=avg_usages.get)
+    best_gpu = min(avg_usages, key=avg_usages.get)
+    print(f"Selected GPU: {best_gpu} (Average memory usage: {avg_usages[best_gpu]})")
+    return best_gpu
