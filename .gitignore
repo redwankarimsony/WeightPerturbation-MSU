@@ -3,6 +3,7 @@ Iris_Image_Database/LivDet-Iris-2020/*
 Iris_Image_Database/LivDet-iris-2017/*
 Model/LivDet-Iris-2020/*
 Results/*
+Results-published/*
 vision-transformers-cifar10
 CIFAR10-Experiments/
 Data-Splits/

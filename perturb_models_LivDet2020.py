@@ -33,6 +33,7 @@ if __name__ == '__main__':
     parser.add_argument('-bestTDR', default=0.9022)
     parser.add_argument('-nmodels', default=1, type=int)
     parser.add_argument("-device", default="cuda:0", type=str)
+    parser.add_argument("-keep_best", default=20, type=int)
     args = parser.parse_args()
 
     # CUDA Device assignment.
@@ -143,7 +144,7 @@ if __name__ == '__main__':
 
                     # Update models_detail.csv and keep the best 30 models
                     update_models_details(filePath=os.path.join(model_save_dir, f"models_detail.csv"),
-                                          keep_best=20,
+                                          keep_best=args.keep_best,
                                           info={"fileName": f"{args.model}{args.perturbation}-{TDR:0.4f}-.pth",
                                                 "layer": layer,
                                                 "scale": scales[index],

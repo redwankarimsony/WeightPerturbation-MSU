@@ -32,7 +32,39 @@ pip install -r requirements.txt
 ```
 
 
+### Perturb models 100 times
+Perturb the models 100 times each for the models and then the models will be stored in Results directory. By default it will store the best performing (perturbed) 20 models.
+```bash
+# Perturb DenseNet161
+python perturb_models_LivDet2020.py -model DenseNet161 -perturbation GaussianNoise -perturbationSetup Entire -nmodels 100 -keep_best 20
+
+# Perturb ResNet101
+python perturb_models_LivDet2020.py -model ResNet101 -perturbation GaussianNoise -perturbationSetup Entire -nmodels 100 -keep_best 20
+
+# Perturb VGG16
+python perturb_models_LivDet2020.py -model VGG16 -perturbation GaussianNoise -perturbationSetup Entire -nmodels 100 -keep_best 20
+```
+
+
+After all the perturbations are done, you are ready to do the Kernel Fusion and Score fusion of the perturbed model for ensemble. 
+
+```bash
+# Fuse the DenseNet161 model
+python kernel_fusion.py -model DenseNet161
+
+
+# Fuse the ResNet101 model
+python kernel_fusion.py -model ResNet101
+
+# Fuse the VGG16 model
+python kernel_fusion.py -model VGG16
+```
+
+
+
+
 ### Citation
+Please cite this work with the following bibTeX
 ```@inproceedings{sharma2024investigating,
   title={Investigating Weight-Perturbed Deep Neural Networks With Application in Iris Presentation Attack Detection},
   author={Sharma, Renu and Sony, Redwan and Ross, Arun},
@@ -41,4 +73,8 @@ pip install -r requirements.txt
   organization={Michigan State University}
 }
 ```
+
+### Article Corresponding Author
+[Arun Ross](https://www.egr.msu.edu/people/profile/rossarun)\
+[Email](rossarun@cse.msu.edu)
 
