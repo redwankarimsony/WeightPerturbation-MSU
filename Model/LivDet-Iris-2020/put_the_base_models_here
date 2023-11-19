@@ -3,7 +3,6 @@ Please download the base models and put them in this directory.
 Model/
 └── LivDet-Iris-2020
     ├── DesNet161_best.pth
-    ├── put_the_base_models_here
     ├── ResNet101_best.pth
     └── VGG19_best.pth
     
