@@ -64,7 +64,7 @@ def kernelFusionDenseNet161(model1, model2, layer, ):
     return model1
 
 
-def loadNewModel(desc=None, savedPath=None):
+def loadNewModel(desc=None, savedPath=None, device="cpu"):
     # Defining models
     if desc == 'DenseNet161':
         model = models.densenet161(weights=DenseNet161_Weights.DEFAULT)
@@ -82,6 +82,7 @@ def loadNewModel(desc=None, savedPath=None):
 
     # Loading weights/state dictionary
     model.load_state_dict(torch.load(savedPath))
+    model.to(device)
     return model
 
 
