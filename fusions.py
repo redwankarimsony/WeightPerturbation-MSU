@@ -90,7 +90,12 @@ def loadNewModel(desc=None, savedPath=None, device="cpu"):
         raise ValueError("Model not defined.")
 
     # Loading weights/state dictionary
-    model.load_state_dict(torch.load(savedPath)['state_dict'])
+    loaded_models = torch.load(savedPath)
+    if 'state_dict' in loaded_models.keys():
+        model.load_state_dict(loaded_models['state_dict'])
+    else:
+        model.load_state_dict(loaded_models)
+        # model.load_state_dict(['state_dict'])
     model.to(device)
     model.eval()
     return model

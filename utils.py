@@ -9,37 +9,38 @@ import os
 import torch
 
 
-def get_cuda_device():
-    # CUDA Device assignment.
-    if torch.cuda.is_available():
-        if torch.cuda.device_count() > 1:
-            best_gpu = get_gpu_with_least_memory_over_period()
-            device = torch.device(f'cuda:{best_gpu}')
-        else:
-            device = torch.device("cuda")
-    else:
-        device = torch.device("cpu")
 
-    return device
 
 
 def make_search_index(result_dir, perturbation, model):
-    search_str = os.path.join(result_dir, perturbation, f"{model}{perturbation}*.pth")
-
-    files = glob.glob(search_str)
+    try:
+        df_models_detail = pd.read_csv(os.path.join(result_dir, perturbation, model, 'models_detail.csv'))
+    except FileNotFoundError:
+        print(f"models_detail.csv not found in {os.path.join(result_dir, perturbation, model)}")
+        return
+    
+    files = df_models_detail.fileName.values
 
     # Generating all combinations of two files
     file_combinations = list(combinations(files, 2))
 
-    # To see the combinations
-    with open(os.path.join(result_dir, perturbation, f"summary-{model}.csv"), "w") as f:
-        f.write("modelA,modelB,modelA-Score,modelB-Score\n")
-        for (modelA, modelB) in file_combinations:
-            f.write(
-                modelA.split("/")[-1] + "," + modelB.split("/")[-1] + ',' + modelA.split("-")[-2] + ',' + modelB.split(
-                    "-")[-2] + "\n")
+    df_search = pd.DataFrame(columns=['modelA', 'modelB', 'modelA-Score', 'modelB-Score', 'RegularFusion',
+                                      'KernelFusion'])
+    
+    for (modelA, modelB) in file_combinations:
+        # Updating the search index
+        new_row = pd.DataFrame(columns=['modelA', 'modelB', 'modelA-Score', 'modelB-Score', 'RegularFusion',
+                                        'KernelFusion'], 
+                                        data=[[modelA, modelB, modelA.split("-")[-2], modelB.split("-")[-2], 'None', 'None']])
+        
+        df_search = pd.concat([df_search, new_row], ignore_index=True)
 
-    print(f"Summary file saved at: {os.path.join(result_dir, perturbation, f'summary-{model}.csv')}")
+
+    # Saving the search index
+    df_search.to_csv(os.path.join(result_dir, perturbation, model, f"fusion-results.csv"), index=False)
+    print(f"Search index saved at: {os.path.join(result_dir, perturbation, model, f'fusion-results.csv')}")
+    print(df_search.head())
+
 
 
 def update_models_details(filePath, keep_best, info):
@@ -80,6 +81,20 @@ def update_models_details(filePath, keep_best, info):
             if model not in df.fileName.values:
                 os.remove(os.path.join(model_save_path, model))
                 print(f"Deleted model: {model}")
+
+
+def get_cuda_device():
+    # CUDA Device assignment.
+    if torch.cuda.is_available():
+        if torch.cuda.device_count() > 1:
+            best_gpu = get_gpu_with_least_memory_over_period()
+            device = torch.device(f'cuda:{best_gpu}')
+        else:
+            device = torch.device("cuda")
+    else:
+        device = torch.device("cpu")
+
+    return device
 
 
 def get_gpu_usage():

@@ -15,7 +15,7 @@ from fusions import (kernelFusionDenseNet161,
                      getOriginalLabels,
                      getPrediction,
                      getScore)
-from utils import get_cuda_device
+from utils import get_cuda_device, make_search_index
 
 torch.multiprocessing.set_sharing_strategy('file_system')
 
@@ -34,6 +34,7 @@ if __name__ == '__main__':
     parser.add_argument('-bestTDR', default=0.9022, type=int)
     parser.add_argument('-nmodels', default=1, type=int)
     args = parser.parse_args()
+    args.device = get_cuda_device()
 
     # Selecting the best TDR for the model and setting the base model path
     args.bestTDR = bestTDRs[args.model]
@@ -61,17 +62,22 @@ if __name__ == '__main__':
     saved_weights = glob.glob(os.path.join(args.resultPath, args.perturbation, "*.pth"))
     # print(saved_weights)
 
-    combinations = loadSummary(os.path.join(args.resultPath, args.perturbation, f"summary-{args.model}.csv"))
-    print(combinations.head())
+    # Make search index for the saved weights if not already present
+    if not os.path.exists(os.path.join(args.resultPath, args.perturbation, args.model, f"fusion-results.csv")):
+        make_search_index(result_dir=args.resultPath, perturbation=args.perturbation, model=args.model)
+
+    # Loading the search index for the saved weights
+    combinations = loadSummary(os.path.join(args.resultPath, args.perturbation, args.model, f"fusion-results.csv"))
+    # print(combinations.head())
 
     for rowIdx, row in combinations.iterrows():
-        if combinations.iloc[rowIdx, 4] == "None" or combinations.iloc[rowIdx, 4] == "None":
-            print("\n\n Row ID: " + rowIdx, "\n", row)
+        if combinations.iloc[rowIdx, 4] == "None" or combinations.iloc[rowIdx, 5] == "None":
+            print("\n\nRow ID: ", rowIdx, "\n", row)
             # modelA, modelB, modelA-Score, modelB-Score, RegularFusion, KernelFusion
 
             # Creating modelA and modelB
-            modelA = os.path.join(args.resultPath, args.perturbation, row["modelA"])
-            modelB = os.path.join(args.resultPath, args.perturbation, row["modelB"])
+            modelA = os.path.join(args.resultPath, args.perturbation, args.model, row["modelA"])
+            modelB = os.path.join(args.resultPath, args.perturbation, args.model, row["modelB"])
             modelA = loadNewModel(desc=args.model, device=torch.device("cpu"), savedPath=modelA)
             modelB = loadNewModel(desc=args.model, device=torch.device("cpu"), savedPath=modelB)
             modelA.eval()
@@ -92,8 +98,8 @@ if __name__ == '__main__':
             model_Kfused.eval()
 
             # Generate predictions on model pair
-            modelA_preds = getPrediction(model=modelA, dataLoader=livDetIris20_dl, device=torch.device("cuda:1"))
-            modelB_preds = getPrediction(model=modelB, dataLoader=livDetIris20_dl, device=torch.device("cuda:0"))
+            modelA_preds = getPrediction(model=modelA, dataLoader=livDetIris20_dl, device=torch.device("cuda:1"), message="Model A")
+            modelB_preds = getPrediction(model=modelB, dataLoader=livDetIris20_dl, device=torch.device("cuda:0"), message="Model B")
 
             # Remove models from memory
             modelB, modelA = None, None
@@ -101,7 +107,7 @@ if __name__ == '__main__':
 
             # Generate predictions on kernel fused model
             model_Kfused_preds = getPrediction(model=model_Kfused, dataLoader=livDetIris20_dl,
-                                               device=torch.device("cuda:1"))
+                                               device=torch.device("cuda:1"), message="Kernel Fused Model")
             model_Kfused = None
             torch.cuda.empty_cache()
 
@@ -115,10 +121,10 @@ if __name__ == '__main__':
             kernelFusionScore = getScore(testTrueLabels=testTrueLabels, rawScores=model_Kfused_preds, threshold=0.002)
             print(f"reg fusion: {regFusionScore}, kernel fusion: {kernelFusionScore}")
 
-            combinations.iloc[rowIdx, 4] = regFusionScore
-            combinations.iloc[rowIdx, 5] = kernelFusionScore
+            combinations.iloc[rowIdx, 4] = round(regFusionScore, 4)
+            combinations.iloc[rowIdx, 5] = round(kernelFusionScore, 4)
 
-            combinations.to_csv(os.path.join(args.resultPath, args.perturbation, f"summary-{args.model}.csv"),
+            combinations.to_csv(os.path.join(args.resultPath, args.perturbation, args.model, f"fusion-results.csv"),
                                 index=False)
 
         else:
