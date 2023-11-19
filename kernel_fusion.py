@@ -1,4 +1,3 @@
-
 import argparse
 import glob
 import os
@@ -52,7 +51,6 @@ if __name__ == '__main__':
     # Defining scales
     scales = [float(scale) for scale in args.scales.split(',')]
 
-
     layers = get_layers(model=args.model, perturbationSetup=args.perturbationSetup)
 
     # Loading the dataset
@@ -63,7 +61,7 @@ if __name__ == '__main__':
     saved_weights = glob.glob(os.path.join(args.resultPath, args.perturbation, "*.pth"))
     # print(saved_weights)
 
-    combinations = loadSummary(os.path.join(args.resultPath, args.perturbation, "summary.csv"))
+    combinations = loadSummary(os.path.join(args.resultPath, args.perturbation, f"summary-{args.model}.csv"))
     print(combinations.head())
 
     for rowIdx, row in combinations.iterrows():
@@ -120,7 +118,8 @@ if __name__ == '__main__':
             combinations.iloc[rowIdx, 4] = regFusionScore
             combinations.iloc[rowIdx, 5] = kernelFusionScore
 
-            combinations.to_csv(os.path.join(args.resultPath, args.perturbation, "summary.csv"), index=False)
+            combinations.to_csv(os.path.join(args.resultPath, args.perturbation, f"summary-{args.model}.csv"),
+                                index=False)
 
         else:
             print(f"Row number {rowIdx + 1} already calculated")

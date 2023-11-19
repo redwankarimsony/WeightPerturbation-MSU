@@ -12,6 +12,15 @@ from torchvision.models import (DenseNet161_Weights,
                                 VGG19_BN_Weights)
 from tqdm import tqdm
 
+__all__ = ['kernelFusionDenseNet161',
+           'kernelFusionVGG19',
+           'kernelFusionResNet101',
+           'loadNewModel',
+           'loadSummary',
+           'getOriginalLabels',
+           'getPrediction',
+           'getScore']
+
 
 def kernelFusionVGG19(model1, model2, layer, ):
     layers = ['0', '3', '7', '10', '14', '17', '20', '23', '27', '30', '33', '36', '40', '43', '46', '49']

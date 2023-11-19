@@ -82,9 +82,9 @@ class LivDetIris2020(Dataset):
         return tranformImage, imageName, 0 if v[1] == "Live" else 1
 
 
-def get_LivDetIris2020(imageFolder, splitPath, split="train"):
+def get_LivDetIris2020(imageFolder, splitPath):
     # Make the dataset
-    livDetIris20_ds = LivDetIris2020(imageFolder, splitPath, split=split)
+    livDetIris20_ds = LivDetIris2020(imageFolder, splitPath)
 
     # Make the dataloader
 
