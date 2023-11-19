@@ -36,3 +36,8 @@ def get_layers(model, perturbationSetup):
                       'features.20.weight',
                       'features.10.weight',
                       'features.0.weight']
+
+        else:
+            raise ValueError("Model not supported")
+    return layers
+
