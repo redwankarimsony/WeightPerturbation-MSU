@@ -40,7 +40,7 @@ if __name__ == '__main__':
     args.bestTDR = bestTDRs[args.model]
     args.modelPath = base_model_paths[args.model]
     print(f"Experiment: \nModel: {args.model}\nModelPath: {args.modelPath}")
-    print(f"\nDataset: {args.splitPath} BestTDR: {args.bestTDR[args.model]}\nDevice: {args.device}")
+    print(f"\nDataset: {args.splitPath} BestTDR: {args.bestTDR}\nDevice: {args.device}")
 
     # CUDA Device assignment.
     device = get_cuda_device()
