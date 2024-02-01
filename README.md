@@ -77,9 +77,9 @@ Please cite this work with the following bibTeX
 ```@inproceedings{sharma2024investigating,
   title={Investigating Weight-Perturbed Deep Neural Networks With Application in Iris Presentation Attack Detection},
   author={Sharma, Renu and Sony, Redwan and Ross, Arun},
-  booktitle={WACV 2024 - Workshop on Manipulation, Adversarial, and Presentation Attacks in Biometrics},
-  year={2024},
-  organization={Michigan State University}
+  booktitle={Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision},
+  pages={1082--1091},
+  year={2024}
 }
 ```
 
